@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tailwind.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}" />
+    <meta content="#ffcc99" name="theme-color" />
+    <title>URL Shortener</title>
+    <meta
+      content="Quick &amp; Easy To Use URL Shortener Service!"
+      name="description" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='media/popcat.png') }}" />
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <style>
+      #main-content {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="loading-screen"
+      class="relative loadingscreen flex justify-center items-center min-h-screen min-w-screen overflow-y-hidden overflow-x-hidden mt-[45vh]">
+      <div class="absolute loadingmain min-h-screen min-w-[100vw]">
+        <div class="loader"></div>
+        <h1
+          class="text-center text-white text-3xl mt-4 uppercase"
+          style="font-family: monospace">
+          Loading...
+        </h1>
+      </div>
+    </div>
+
+    <main id="main-content" style="overflow-x: hidden">
+      <div
+        class="flex p-4 mb-4 text-sm border rounded-sm bg-gray-800 min-w-[102vw] text-[#7760fe] border-[#7760fe]"
+        role="alert">
+        <svg
+          aria-hidden="true"
+          class="flex-shrink-0 inline w-5 h-5 mr-3"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            clip-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+            fill-rule="evenodd"></path>
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+          <span class="font-medium">INFO</span> Visit <span></span> to get
+          statistics!
+        </div>
+
+        <script>
+          document.querySelector('div span:nth-of-type(2)').textContent =
+            window.location.host + '/your-url-extension/info';
+        </script>
+      </div>
+      <h1 class="main-heading">
+        URL <span class="text-[#7760fe]">Shrinker</span>
+      </h1>
+      <div class="container-wrapper">
+        <div class="container">
+          <div id="code-submit">
+            <form>
+              <div class="container">
+                <div class="field">
+                  <div class="label">Long URL</div>
+                  <input
+                    autocomplete="off"
+                    name="fullUrl"
+                    placeholder="Enter Original URL"
+                    required
+                    type="url" />
+                </div>
+                <div class="field">
+                  <div class="label">Extension</div>
+                  <input
+                    autocomplete="off"
+                    name="shortUrl"
+                    placeholder="example-endpoint [Leave empty for random extension]"
+                    type="text" />
+                </div>
+                <button class="submit" type="submit">Submit</button>
+              </div>
+            </form>
+          </div>
+          <div class="container-wrapper pt-[4vh]">
+            <div class="container">
+              <h2
+                class="text-[40px] pb-[4vh] flex items-center justify-center text-white text-center">
+                <span class="decoration-[#7760fe] underline underline-offset-4"
+                  >All Entries</span
+                >
+                &nbsp;<span class="bracket">[</span>
+                <span class="text-[#fff] total-entries">0</span>
+                <span class="bracket">]</span>
+              </h2>
+              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left text-gray-400">
+                  <thead class="text-xsuppercase text-gray-400 t-headd">
+                    <tr>
+                      <th class="px-6 py-3" scope="col">Full URL</th>
+                      <th class="px-6 py-3" scope="col">Short URL</th>
+                      <th class="px-6 py-3" scope="col">Clicks</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

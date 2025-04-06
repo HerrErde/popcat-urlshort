@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>URL Shortener</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/info.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tailwind.css') }}" />
+    <meta name="theme-color" content="#ffcc99" />
+    <meta
+      name="description"
+      content="Quick &amp; Easy To Use URL Shortener Service!" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='media/popcat.png') }}" />
+  </head>
+  <body>
+    <main>
+      <div
+        class="main-container min-h-screen gap-6 flex justify-center items-center">
+        <div class="heading text-center">
+          <h1 class="h text-6xl text-center text-white">URL Shortener</h1>
+          <p class="text-2xl text-[#9c8cf4]">
+            Designed By
+            <a
+              target="_blank"
+              class="h text-[#9180fa] underline underline-offset-4 hover:underline-offset-2 duration-150"
+              href="https://dev.herrerde.xyz/"
+              >Herr Erde</a
+            >
+          </p>
+        </div>
+        <div class="card card-1">
+          <p class="card__exit"><i class="fas fa-times"></i></p>
+          <h1 class="text-4xl text-white h">{{data.short}}</h1>
+          <h2 class="card__title text-2xl">
+            <a
+              href="{{data.full}}"
+              style="text-decoration: none; color: rgb(119, 96, 254)"
+              ><span style="color: rgb(203, 202, 202)">Views:</span
+              >&nbsp;{{data.clicks}}</a
+            >
+          </h2>
+          <p class="card__apply">
+            <a class="card__link text-xl" href="{{data.full}}"
+              >Visit ➜<i class="fas fa-arrow-right"></i
+            ></a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      async function update() {
+        try {
+          const pathParts = window.location.pathname.split('/');
+          const short = pathParts[pathParts.length - 2];
+
+          const response = await fetch(`/api/get/${short}`);
+          const data = await response.json();
+
+          if (Array.isArray(data)) {
+            // Update the total count directly in the JavaScript
+            const urlCount = data.items.length; // Get the total count of URLs
+            const urlCountElement = document.querySelector('.url-count');
+            if (urlCountElement) {
+              urlCountElement.textContent = urlCount; // Set the total number of URLs
+            }
+          } else {
+            console.error('Invalid response structure');
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+
+      update();
+
+      // Fetch entries when the user returns to the tab after being away.
+      let wasUnfocused = false;
+      let unfocusedTime = 0;
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          wasUnfocused = true;
+          unfocusedTime = Date.now();
+        } else {
+          // If the tab was hidden for more than 3 seconds, refresh the data.
+          if (wasUnfocused && Date.now() - unfocusedTime > 3000) {
+            update();
+          }
+          wasUnfocused = false;
+        }
+      });
+    </script>
+  </body>
+</html>
