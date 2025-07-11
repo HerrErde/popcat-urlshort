@@ -34,30 +34,36 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const updateEntries = async () => {
-    const response = await fetch('/api/all');
+    try {
+      const response = await fetch('/api/all');
+      const data = await response.json();
 
-    const data = await response.json();
-    if (!Array.isArray(data)) return;
+      const entries = Array.isArray(data) ? data : [];
 
-    tableBody.innerHTML = data
-      .map(
-        ({ full, short, clicks }) => `
-        <tr class="border-b bg-[#131214] border-gray-700 hover:bg-gray-600">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <a id="full" class="text-[#00ffff]" href="${full}">
-              ${full.length > 50 ? full.slice(0, 50) + '...' : full}
-            </a>
-          </th>
-          <td class="px-6 py-4">
-            <a id="short" href="/${short}/info">${short}</a>
-          </td>
-          <td class="px-6 py-4">${clicks}</td>
-        </tr>
-      `
-      )
-      .join('');
+      tableBody.innerHTML = entries
+        .map(
+          ({ full, short, clicks }) => `
+          <tr class="border-b bg-[#131214] border-gray-700 hover:bg-gray-600">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <a id="full" class="text-[#00ffff]" href="${full}">
+                ${full.length > 50 ? full.slice(0, 50) + '...' : full}
+              </a>
+            </th>
+            <td class="px-6 py-4">
+              <a id="short" href="/${short}/info">${short}</a>
+            </td>
+            <td class="px-6 py-4">${clicks}</td>
+          </tr>
+        `
+        )
+        .join('');
 
-    if (totalCountElement) totalCountElement.textContent = data.length;
+      if (totalCountElement) totalCountElement.textContent = entries.length;
+    } catch (err) {
+      console.error('Failed to fetch entries:', err);
+      tableBody.innerHTML = ''; // optional: show "no data" message
+      if (totalCountElement) totalCountElement.textContent = '0';
+    }
 
     if (!initialLoadComplete) {
       hideLoadingScreen();

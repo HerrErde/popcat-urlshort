@@ -72,7 +72,7 @@ async def all_urls():
     if success and data:
         return jsonify(data), 200
     elif success and not data:
-        return jsonify({"error": "No URLs found"}), 400
+        return jsonify({"error": "No URLs found"}), 404
     else:
         return jsonify({"error": "There was an Error"}), 500
 
