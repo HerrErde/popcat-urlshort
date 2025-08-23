@@ -2,16 +2,14 @@
 
 echo Setting up...
 rmdir /s /q .venv
-python -m venv .venv --system-site-packages
+python -m venv .venv
 
-cd src
-
-echo Installing packages...
 call .venv\Scripts\activate
 echo Upgrade Pip...
 python.exe -m pip install --upgrade pip > nul
+cd src
+echo Installing packages...
 pip install -r requirements.txt
-call deactivate
 
 echo Finished...
 

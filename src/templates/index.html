@@ -5,39 +5,19 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/tailwind.css') }}" />
-    <link
-      rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}" />
     <meta content="#ffcc99" name="theme-color" />
     <title>URL Shortener</title>
     <meta
       content="Quick &amp; Easy To Use URL Shortener Service!"
       name="description" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link
       rel="icon"
-      href="{{ url_for('static', filename='media/popcat.png') }}" />
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <style>
-      #main-content {
-        display: none;
-      }
-    </style>
+      href="{{ url_for('static', filename='img/popcat.png') }}" />
   </head>
   <body>
-    <div
-      id="loading-screen"
-      class="relative loadingscreen flex justify-center items-center min-h-screen min-w-screen overflow-y-hidden overflow-x-hidden mt-[45vh]">
-      <div class="absolute loadingmain min-h-screen min-w-[100vw]">
-        <div class="loader"></div>
-        <h1
-          class="text-center text-white text-3xl mt-4 uppercase"
-          style="font-family: monospace">
-          Loading...
-        </h1>
-      </div>
-    </div>
-
     <main id="main-content" style="overflow-x: hidden">
       <div
         class="flex p-4 mb-4 text-sm border rounded-sm bg-gray-800 min-w-[102vw] text-[#7760fe] border-[#7760fe]"
@@ -68,31 +48,34 @@
         URL <span class="text-[#7760fe]">Shrinker</span>
       </h1>
       <div class="container-wrapper">
-        <div class="container">
+        <div class="container mb-[4vh]">
           <div id="code-submit">
-            <form>
-              <div class="container">
-                <div class="field">
-                  <div class="label">Long URL</div>
-                  <input
-                    autocomplete="off"
-                    name="fullUrl"
-                    placeholder="Enter Original URL"
-                    required
-                    type="url" />
+            <div class="container">
+              <form action="/shorten" method="POST">
+                <div class="container">
+                  <div class="field">
+                    <div class="label">Long URL</div>
+                    <input
+                      autocomplete="off"
+                      name="full"
+                      type="url"
+                      placeholder="Enter Original URL"
+                      required="" />
+                  </div>
+                  <div class="field">
+                    <div class="label">Extension</div>
+                    <input
+                      autocomplete="off"
+                      name="short"
+                      type="text"
+                      placeholder="example-endpoint [Leave empty for random extension]" />
+                  </div>
+                  <button type="submit" class="submit">Submit</button>
                 </div>
-                <div class="field">
-                  <div class="label">Extension</div>
-                  <input
-                    autocomplete="off"
-                    name="shortUrl"
-                    placeholder="example-endpoint [Leave empty for random extension]"
-                    type="text" />
-                </div>
-                <button class="submit" type="submit">Submit</button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
+
           <div class="container-wrapper pt-[4vh]">
             <div class="container">
               <h2
@@ -101,21 +84,96 @@
                   >All Entries</span
                 >
                 &nbsp;<span class="bracket">[</span>
-                <span class="text-[#fff] total-entries">0</span>
+                <span class="text-[#fff] total-entries">{{ total }}</span>
                 <span class="bracket">]</span>
               </h2>
+
               <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-400">
-                  <thead class="text-xsuppercase text-gray-400 t-headd">
+                  <thead class="text-xs uppercase text-gray-400 t-headd">
                     <tr>
-                      <th class="px-6 py-3" scope="col">Full URL</th>
-                      <th class="px-6 py-3" scope="col">Short URL</th>
-                      <th class="px-6 py-3" scope="col">Clicks</th>
+                      <th class="px-6 py-3">Full URL</th>
+                      <th class="px-6 py-3">Short URL</th>
+                      <th class="px-6 py-3">Clicks</th>
                     </tr>
                   </thead>
-                  <tbody></tbody>
+                  <tbody>
+                    {% for entry in data %}
+
+                    <tr
+                      class="border-b bg-[#131214] border-gray-700 hover:bg-gray-600">
+                      <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <a
+                          id="full"
+                          class="text-[#00ffff]"
+                          href="{{ entry.full }}">
+                          {{ entry.full }}
+                        </a>
+                      </th>
+
+                      <td class="px-6 py-4">
+                        <a id="short" href="/{{ entry.short }}/info">
+                          {{ entry.short }}
+                        </a>
+                      </td>
+
+                      <td class="px-6 py-4">{{ entry.clicks }}</td>
+                    </tr>
+
+                    {% endfor %}
+                  </tbody>
                 </table>
               </div>
+
+              <div
+                class="w-full mt-6 overflow-x-auto no-scrollbar"
+                id="pagination-container">
+                <div class="flex gap-2 px-2 justify-center sm:justify-start">
+                  {% for p in range(1, total_pages + 1) %}
+                  <a
+                    href="/?page={{ p }}"
+                    class="px-4 py-2 rounded-md border {% if p == page %} bg-[#7760fe] border-[#7760fe] text-white active-page {% else %} bg-[#ffffff0d] border-[#333] text-gray-300 hover:bg-[#ffffff18] {% endif %}">
+                    {{ p }}
+                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                  const container = document.getElementById(
+                    'pagination-container'
+                  );
+                  const active = container?.querySelector('.active-page');
+                  if (!container || !active) return;
+
+                  function getRelativeOffset(el, ancestor) {
+                    let offset = 0;
+                    while (el && el !== ancestor) {
+                      offset += el.offsetLeft || 0;
+                      el = el.offsetParent;
+                    }
+                    return offset;
+                  }
+
+                  const initialScroll = container.scrollLeft;
+                  const containerWidth = container.clientWidth;
+                  const maxScroll = Math.max(
+                    0,
+                    container.scrollWidth - containerWidth
+                  );
+                  const relativeLeft = getRelativeOffset(active, container);
+
+                  let target =
+                    relativeLeft - containerWidth / 2 + active.clientWidth / 2;
+
+                  target = Math.max(0, Math.min(target, maxScroll));
+
+                  container.scrollTo({ left: target, behavior: 'smooth' });
+                });
+              </script>
             </div>
           </div>
         </div>

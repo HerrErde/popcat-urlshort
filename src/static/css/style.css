@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@900&display=swap');
+
 body {
   background: #131214;
-  background-image: url(../media/bg.png);
+  background-image: url(../img/bg.png);
   background-repeat: repeat;
   -webkit-animation: bg-scrolling-reverse 0.92s infinite;
   -moz-animation: bg-scrolling-reverse 0.92s infinite;
@@ -12,69 +13,92 @@ body {
   -o-animation-timing-function: linear;
   animation-timing-function: linear;
   color: #fff;
-  font-family: Nunito Sans, sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .loader {
   width: 280px;
   height: 40px;
   transform: skewX(-45deg);
   background: linear-gradient(#7760fe 0 0) left -30px top 0/40px 40px no-repeat #101113;
   border: 2px solid #7760fe;
-  animation: l4 1s linear infinite;
+  animation: l4 1s infinite linear;
   display: block;
-  margin: 20px auto;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
+
 @keyframes l4 {
-  to {
+  100% {
     background-position: right -30px top 0;
   }
 }
+
 @-webkit-keyframes bg-scrolling-reverse {
-  to {
+  100% {
     background-position: 50px 50px;
   }
 }
+
 @-moz-keyframes bg-scrolling-reverse {
-  to {
+  100% {
     background-position: 50px 50px;
   }
 }
+
 @-o-keyframes bg-scrolling-reverse {
-  to {
+  100% {
     background-position: 50px 50px;
   }
 }
+
 @keyframes bg-scrolling-reverse {
-  to {
+  100% {
     background-position: 50px 50px;
   }
 }
+
 @-webkit-keyframes bg-scrolling {
   0% {
     background-position: 50px 50px;
   }
 }
+
 @-moz-keyframes bg-scrolling {
   0% {
     background-position: 50px 50px;
   }
 }
+
 @-o-keyframes bg-scrolling {
   0% {
     background-position: 50px 50px;
   }
 }
+
 @keyframes bg-scrolling {
   0% {
     background-position: 50px 50px;
   }
 }
+
 @media only screen and (max-width: 900px) {
   .main-heading {
     font-size: 50px !important;
-    margin: 10vh 0 0 !important;
+    margin: 10vh 0 0 0 !important;
   }
 }
+
 .main-heading {
   color: #fff;
   display: flex;
@@ -83,33 +107,48 @@ body {
   font-size: 57px;
   margin: 10vh 30px 0 70px;
 }
+
 .container {
   background-color: #131214;
   border-radius: 14px;
   max-width: 80vw !important;
   padding: 10px;
 }
+
 .container-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+.field {
+  width: 100%;
+  height: 45px;
+  margin: 45px 0;
+  display: flex;
+  position: relative;
+}
+
 .heading {
   margin: 13vh 30px 0 70px;
   text-align: center;
 }
+
 .forms {
   width: 60%;
-  margin: 0 auto 50px;
+  margin: 0 auto;
+  margin-bottom: 50px;
   padding: 20px;
   background: #121212;
   border-radius: 10px;
 }
+
 .label {
   position: absolute;
   top: -30px;
   font-weight: 500;
 }
+
 .form-select {
   display: inline-flex;
   flex-shrink: 0;
@@ -139,8 +178,8 @@ body {
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 0.5rem;
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 0),
-    linear-gradient(135deg, currentColor 50%, transparent 0);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
   background-position: calc(100% - 20px) calc(1px + 50%),
     calc(100% - 16px) calc(1px + 50%);
   background-size: 4px 4px, 4px 4px;
@@ -148,13 +187,18 @@ body {
   border: none;
   max-width: 100%;
 }
+
 input:focus,
 textarea:focus {
+  border: none;
   outline: 2px solid var(--main);
+  outline-offset: 2px;
 }
+
 .submit {
   width: 100%;
   height: 50px;
+  border: none;
   background: #0e0e0e;
   margin-top: -20px;
   border-radius: 5px;
@@ -167,9 +211,11 @@ textarea:focus {
   text-transform: uppercase;
   transition: 0.5s ease;
 }
+
 .submit:hover {
   background: #7760fe;
 }
+
 input,
 textarea {
   flex-shrink: 1;
@@ -181,17 +227,20 @@ textarea {
   font-size: 0.875rem;
   line-height: 1.25rem;
   line-height: 2;
+  border-width: 1px;
   background-color: #ffffff0d;
   width: 100%;
   border-radius: 0.5rem;
   border: none;
 }
+
 input:focus,
 textarea:focus {
   border: none;
   outline: 2px solid #7760fe;
   outline-offset: 2px;
 }
+
 .field {
   width: 100%;
   height: 45px;
@@ -199,30 +248,35 @@ textarea:focus {
   display: flex;
   position: relative;
 }
+
 .lab {
   padding: 0.5rem;
   width: 14%;
   font-family: sans-serif;
   border-radius: 0.3rem;
   cursor: pointer;
-  border: 2px solid #fff;
+  border: 2px solid white;
   background: #ffffff0d;
-  color: #fff;
+  color: white;
   display: grid;
   place-items: center;
-  transition: all 0.3s ease;
+  transition: 0.3s all ease;
 }
+
 .lab:hover {
-  border: 2px solid #fff;
-  background: #fff;
-  color: #000;
+  border: 2px solid white;
+  background: white;
+  color: black;
 }
+
 ::placeholder {
   font-weight: 300;
 }
+
 .t-headd {
   background-color: #1d1c1f;
 }
+
 .bracket {
   color: #7760fe;
 }

@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 
 LABEL app_name="Popcat Url Shortener"
 LABEL description="Popcat Url Shortener is a Public Version of the Original Shortener"
-LABEL version="1.0.0"
+LABEL version="2.0.0"
 LABEL maintainer="Herr Erde"
 
 WORKDIR /app

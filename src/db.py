@@ -1,9 +1,10 @@
+import datetime
+
 import shortuuid
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import errors
 
 import config
-
 
 db_host = config.DB_HOST
 db_user = config.DB_USER
@@ -45,29 +46,33 @@ class DBHandler:
         except Exception as e:
             print(f"An error occurred: {e}")
 
-    async def create(self, full, short):
+    async def create(self, full: str, short: str | None = None, max_attempts: int = 5):
         try:
             collection = self.db_client[self.collection_name]
 
-            if not short:
-                short = shortuuid.ShortUUID().random(length=11)
-
-            existing_doc = await collection.find_one({"short": short})
-            if existing_doc:
-                print(f"Short URL '{short}' already exists.")
-                return False, short
+            attempts = 0
+            while not short or await collection.find_one({"short": short}):
+                if attempts >= max_attempts:
+                    logging.error(
+                        "Failed to generate unique short after %d attempts",
+                        max_attempts,
+                    )
+                    return False, None
+                short = shortuuid.ShortUUID().random(length=config.SHORT_LEN)
+                attempts += 1
 
             data = {
                 "full": full,
                 "short": short,
                 "clicks": 0,
+                "date": datetime.datetime.now(tz=datetime.timezone.utc),
             }
             await collection.insert_one(data)
             return True, short
 
         except Exception as e:
-            print(f"Error inserting data: {e}")
-            return False, short
+            logging.exception("Error inserting data")
+            return False, None
 
     async def info(self, short):
         try:
@@ -79,6 +84,7 @@ class DBHandler:
                     "full": doc.get("full", ""),
                     "short": doc.get("short", ""),
                     "clicks": doc.get("clicks", 0),
+                    "date": doc.get("date", 0),
                 }
                 return True, data
             return False, None
@@ -102,22 +108,25 @@ class DBHandler:
             print(f"Error fetching data: {e}")
             return None
 
-    async def list(self):
+    async def list(self, page: int = 1, per_page: int = 48):
         try:
-            items = []
             collection = self.db_client[self.collection_name]
+            skip_count = (page - 1) * per_page
 
-            async for doc in collection.find({}):
-                items.append(
-                    {
-                        "full": doc.get("full", ""),
-                        "short": doc.get("short", ""),
-                        "clicks": doc.get("clicks", 0),
-                    }
-                )
+            total = await collection.count_documents({})
 
-            return True, items
+            cursor = collection.find({}).skip(skip_count).limit(per_page)
+            items = [
+                {
+                    "full": doc.get("full", ""),
+                    "short": doc.get("short", ""),
+                    "clicks": doc.get("clicks", 0),
+                }
+                async for doc in cursor
+            ]
+
+            return True, items, total
 
         except Exception as e:
             print(f"Error fetching data: {e}")
-            return False, []
+            return False, [], 0
