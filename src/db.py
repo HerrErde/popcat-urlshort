@@ -70,7 +70,7 @@ class DBHandler:
             await collection.insert_one(data)
             return True, short
 
-        except Exception as e:
+        except Exception:
             logging.exception("Error inserting data")
             return False, None
 
