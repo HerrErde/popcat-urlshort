@@ -1,5 +1,5 @@
 motor==3.7.1
-pymongo==4.15.3
+pymongo==4.15.4
 python-dotenv==1.2.1
 quart==0.20.0
 shortuuid==1.0.13
