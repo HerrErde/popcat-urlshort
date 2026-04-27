@@ -1,7 +1,7 @@
 motor==3.7.1
-pymongo==4.16.0
+pymongo==4.17.0
 python-dotenv==1.2.2
 quart==0.20.0
 shortuuid==1.0.13
-uvicorn==0.44.0
+uvicorn==0.46.0
 pytz==2026.1.post1
