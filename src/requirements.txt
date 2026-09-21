@@ -3,5 +3,5 @@ pymongo==4.18.1
 python-dotenv==1.2.3
 quart==0.23.1
 shortuuid==1.0.13
-uvicorn==0.52.4
+uvicorn==0.53.0
 pytz==2026.3.post1
